@@ -14,7 +14,7 @@ struct Data {
 };
 
 int main() {
-    int i, total_letters = 0;
+    int i, total_letters = 0, total_freq = 0;
     size_t j;
     int counts[26] = {0};
     char sentence[BUFSIZ];
@@ -32,16 +32,9 @@ int main() {
             continue;
         }
         counts[(int)(tolower(c) - 'a')]++;
+        total_letters++;
     }
 
-    // display how many occurences of occuring letters
-    for (i = 0; i < 26; i++) {
-        if (counts[i] > 0) {
-            printf("'%c' has %2d occurences.\n", i + 'a', counts[i]);
-            total_letters++;
-        }
-    }
-    //printf("%d\n", total_letters);
     Data struct_keeper[total_letters];
     total_letters = 0;
 
@@ -57,7 +50,31 @@ int main() {
     // sanity check to ensure that we did stuff right
     for (i = 0; i < total_letters; i++) {
         printf("%c \t %d\n", struct_keeper[i].letter, struct_keeper[i].freq);
+        total_freq += struct_keeper[i].freq;
     }
+
+    // finding the two lowest freq (yeah this is messy I know)
+    //while (struct_keeper[0].freq != total_freq) {
+    int first = 1000;
+    int second = 1000;
+    for (i = 0; i < total_letters; i++) {
+        if (struct_keeper[i].freq < struct_keeper[first].freq) {
+            second = first;
+            first = i;
+        }
+        else if (struct_keeper[i].freq < struct_keeper[second].freq && i != first) {
+            second = i;
+        }
+    }
+    int total = struct_keeper[first].freq + struct_keeper[second].freq;
+    struct Data test = {'\0', total, &struct_keeper[first], &struct_keeper[second]};
+
+    printf("Total Freq: %d\n", test.freq);
+    printf("Lowest: %c %d\n", struct_keeper[first].letter, struct_keeper[first].freq);
+    printf("Second Lowest: %c %d\n", struct_keeper[second].letter, struct_keeper[second].freq);
+
+    //}
+        
 
 
     //printf("%s\t%s\n", test.letter, test.left->letter);

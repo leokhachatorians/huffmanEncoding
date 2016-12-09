@@ -18,13 +18,18 @@ struct Link {
 Link *create_link(char, int);
 Link *insert(Link *, char, int);
 Link *insert_at_end(Link *, char, int);
+Link *remove_via_letter(Link *, char);
 void traverse(Link *);
 
 int main() {
     Link *head = NULL;
- //   head = insert(head, 'a', 1);
- //   head = insert(head, 'b', 1);
-    head = insert_at_end(head, 'c', 1);
+    head = insert(head, 'l', 3);
+    head = insert(head, 't', 3);
+    head = insert(head, 'z', 3);
+    head = insert_at_end(head, 'H', 1);
+    traverse(head);
+    head = remove_via_letter(head, 'z');
+    printf("\n");
     traverse(head);
     return 0;
 }
@@ -57,6 +62,33 @@ Link *insert_at_end(Link *head, char letter, int freq) {
     }
 
     cursor->next = create_link(letter, freq);
+    return head;
+}
+
+Link *remove_via_letter(Link *head, char letter) {
+    if (head == NULL) {
+        return head;
+    }
+
+    if (head->data->letter == letter) {
+        Link *found = head;
+        head = found->next;
+        free(found);
+        return head;
+    }
+
+    Link *cursor = head;
+    while (cursor != NULL) {
+        if (cursor->next != NULL && cursor->next->data->letter == letter) {
+            break;
+        }
+        cursor = cursor->next;
+    }
+    if (cursor != NULL) {
+        Link *found = cursor->next;
+        cursor->next = found->next;
+        free(found);
+    }
     return head;
 }
 

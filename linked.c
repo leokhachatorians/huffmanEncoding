@@ -1,38 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct Data Data;
-struct Data {
-    char letter;
-    int freq;
-    Data *left;
-    Data *right;
-};
-
-typedef struct Link Link;
-struct Link {
-    Link *next;
-    Data *data;
-};
-
-Link *create_link(char, int);
-Link *insert(Link *, char, int);
-Link *insert_at_end(Link *, char, int);
-Link *remove_via_letter(Link *, char);
-void traverse(Link *);
-
-int main() {
-    Link *head = NULL;
-    head = insert(head, 'l', 3);
-    head = insert(head, 't', 3);
-    head = insert(head, 'z', 3);
-    head = insert_at_end(head, 'H', 1);
-    traverse(head);
-    head = remove_via_letter(head, 'z');
-    printf("\n");
-    traverse(head);
-    return 0;
-}
+#include "linked.h"
 
 Link *create_link(char letter, int freq) {
     Data *d = (Data*) malloc(sizeof(Data));

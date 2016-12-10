@@ -45,12 +45,12 @@ Link *insert_at_end(Link *head, char letter, int freq) {
     return head;
 }
 
-Link *remove_via_letter(Link *head, char letter) {
+Link *remove_node(Link *head) {
     if (head == NULL) {
         return head;
     }
 
-    if (head->data->letter == letter) {
+    if (head->data->del) {
         Link *found = head;
         head = found->next;
         free(found);
@@ -59,7 +59,7 @@ Link *remove_via_letter(Link *head, char letter) {
 
     Link *cursor = head;
     while (cursor != NULL) {
-        if (cursor->next != NULL && cursor->next->data->letter == letter) {
+        if (cursor->next != NULL && cursor->next->data->del) {
             break;
         }
         cursor = cursor->next;

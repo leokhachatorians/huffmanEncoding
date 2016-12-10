@@ -1,10 +1,12 @@
 #ifndef LINKED_H
 #define LINKED_H
+#include <stdbool.h>
 
 typedef struct Node Node;
 struct Node {
     char letter;
     int freq;
+    bool del;
     Node *left;
     Node *right;
 };
@@ -18,7 +20,7 @@ struct Link {
 Link *create_link(char, int);
 Link *insert(Link *, char, int);
 Link *insert_at_end(Link *, char, int);
-Link *remove_via_letter(Link *, char);
+Link *remove_node(Link *);
 Link *merge_nodes(Link *, Node *, Node *);
 void traverse(Link *);
 

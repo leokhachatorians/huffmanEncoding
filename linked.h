@@ -1,18 +1,18 @@
 #ifndef LINKED_H
 #define LINKED_H
 
-typedef struct Data Data;
-struct Data {
+typedef struct Node Node;
+struct Node {
     char letter;
     int freq;
-    Data *left;
-    Data *right;
+    Node *left;
+    Node *right;
 };
 
 typedef struct Link Link;
 struct Link {
     Link *next;
-    Data *data;
+    Node *data;
 };
 
 Link *create_link(char, int);

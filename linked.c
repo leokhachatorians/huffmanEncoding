@@ -3,7 +3,7 @@
 #include "linked.h"
 
 Link *create_link(char letter, int freq) {
-    Data *d = (Data*) malloc(sizeof(Data));
+    Node *d = (Node*) malloc(sizeof(Node));
     d->letter = letter;
     d->freq = freq;
 

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "linked.h"
 int main() {
-    int total_letters = 0, total_freq = 0;
+    int total_letters = 0;
     int first = BUFSIZ, second = BUFSIZ;
     char c_first = ' ', c_second = ' ';
     Link *head = NULL;

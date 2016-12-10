@@ -7,6 +7,7 @@ struct Node {
     char letter;
     int freq;
     bool del;
+    bool use;
     Node *left;
     Node *right;
 };

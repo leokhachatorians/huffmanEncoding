@@ -12,6 +12,18 @@ Link *create_link(char letter, int freq) {
     return new_node;
 }
 
+Link *merge_nodes(Link *head, Node *first, Node *second) {
+    Node *d = (Node*) malloc(sizeof(Node));
+    d->left = first;
+    d->right = second;
+    d->freq = first->freq + second->freq;
+
+    Link *new_node = (Link*) malloc(sizeof(Link));
+    new_node->data = d;
+    new_node->next = head;
+    return new_node;
+}
+
 Link *insert(Link *head, char letter, int freq) {
     Link *new_node = create_link(letter, freq);
     new_node->next = head;

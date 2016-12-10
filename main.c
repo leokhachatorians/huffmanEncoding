@@ -37,6 +37,8 @@ int main() {
     traverse(head);
     
     Link *cursor = head;
+    Node *n_first = NULL;
+    Node *n_second = NULL;
 
     // Iterate through the linked list to determine
     // fewest occuring letters
@@ -47,16 +49,23 @@ int main() {
 
             first = cursor->data->freq;
             c_first = cursor->data->letter;
+            n_first = cursor->data;
         }
         else if (cursor->data->freq < second && cursor->data->letter != c_first) {
             second = cursor->data->freq;
             c_second = cursor->data->letter;
+            n_second = cursor->data;
         }
         cursor = cursor->next;
     }
 
     printf("First: %c-%d\n", c_first, first);
     printf("Second: %c-%d\n", c_second, second);
+
+    head = merge_nodes(head, n_first, n_second);
+    head = remove_via_letter(head, n_first->letter);
+    head = remove_via_letter(head, n_second->letter);
+    traverse(head);
 
 
 

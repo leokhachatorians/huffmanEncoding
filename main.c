@@ -7,29 +7,23 @@
 int main() {
     int total_letters = 0, unique_letters = 0;
     Link *head = NULL;
-    int counts[26] = {0};
+    int counts[256] = {0};
     char sentence[BUFSIZ];
 
     printf("Enter a sentence: ");
     fgets(sentence, BUFSIZ, stdin);
 
-    //printf("%s\n", sentence);
 
     // Gather the occuring letters
-    for (size_t j = 0; j < strlen(sentence); j++) {
-        char c = sentence[j];
-        if (!isalpha(c) && c != ' ') {
-            continue;
-        }
-        counts[(int)(tolower(c) - 'a')]++;
+    for (int i = 0; sentence[i] != '\0'; i++) {
+        counts[(int)sentence[i]]++;
         total_letters++;
     }
 
     // Insert unique letters into our linked list
-    for (int i = 0; i < 26; i++) {
+    for (int i = 0; i < 256; i++) {
         if (counts[i] > 0) {
-            char c = i + 'a';
-            head = insert(head, c, counts[i]);
+            head = insert(head, i, counts[i]);
             unique_letters++;
         }
     }

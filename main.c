@@ -5,8 +5,9 @@
 #include <stdio.h>
 #include "linked.h"
 int main() {
-    int i, total_letters = 0, total_freq = 0;
-    size_t j;
+    int total_letters = 0, total_freq = 0;
+    int first = BUFSIZ, second = BUFSIZ;
+    char c_first = ' ', c_second = ' ';
     Link *head = NULL;
     int counts[26] = {0};
     char sentence[BUFSIZ];
@@ -16,7 +17,8 @@ int main() {
 
     printf("%s\n", sentence);
 
-    for (j = 0; j < strlen(sentence); j++) {
+    // Gather the occuring letters
+    for (size_t j = 0; j < strlen(sentence); j++) {
         char c = sentence[j];
         if (!isalpha(c) && c != ' ') {
             continue;
@@ -25,14 +27,38 @@ int main() {
         total_letters++;
     }
 
-   // head = insert(head, 'l', 3);
-   // head = insert(head, 't', 3);
-   // head = insert(head, 'z', 3);
-   // head = insert_at_end(head, 'H', 1);
-   // traverse(head);
-   // head = remove_via_letter(head, 'z');
-   // printf("\n");
-   // traverse(head);
+    // Insert unique letters into our linked list
+    for (int i = 0; i < 26; i++) {
+        if (counts[i] > 0) {
+            char c = i + 'a';
+            head = insert(head, c, counts[i]);
+        }
+    }
+    traverse(head);
+    
+    Link *cursor = head;
+
+    // Iterate through the linked list to determine
+    // fewest occuring letters
+    while (cursor != NULL) {
+        if (cursor->data->freq < first) {
+            second = first;
+            c_second = c_first;
+
+            first = cursor->data->freq;
+            c_first = cursor->data->letter;
+        }
+        else if (cursor->data->freq < second && cursor->data->letter != c_first) {
+            second = cursor->data->freq;
+            c_second = cursor->data->letter;
+        }
+        cursor = cursor->next;
+    }
+
+    printf("First: %c-%d\n", c_first, first);
+    printf("Second: %c-%d\n", c_second, second);
+
+
 
     return 0;
 }

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "linked.h"
 
-void dive(Node *);
+void dive(Node *, char, char [], int);
 
 int main() {
     int total_letters = 0, unique_letters = 0;
@@ -67,20 +67,28 @@ int main() {
     }
     //Link *final_head = (Link*) malloc(sizeof(Link));
     printf("Final Count - %d\n", head->data->freq);
-   dive(head->data);
+    char path[1000];
+   dive(head->data, ' ', path, 0);
 
     return 0;
 }
 
-void dive(Node *node) {
+void dive(Node *node, char dir, char path[], int pathlen) {
     if (node == NULL) {
         return;
     }
-    if (node->letter != '\0') {
-        printf("%c - %d\n",
-                node->letter,
-                node->freq);
+    path[pathlen] = dir;
+    pathlen++;
+
+    if (node->left == NULL && node->right == NULL) {
+        for (int i = 0; i < pathlen; i++) {
+            printf("%c", path[i]);
+        }
+        printf("- %c", node->letter);
+        printf("\n");
     }
-    dive(node->left);
-    dive(node->right);
+    else {
+        dive(node->left, '0', path, pathlen);
+        dive(node->right, '1', path, pathlen);
+    }
 }

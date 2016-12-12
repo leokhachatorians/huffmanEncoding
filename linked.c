@@ -77,4 +77,5 @@ void traverse(Link *head) {
         printf("%c\t%d\n", head->data->letter, head->data->freq);
         head = head->next;
     }
+    printf("\n");
 }

@@ -16,7 +16,6 @@ int main() {
     printf("Enter a sentence: ");
     fgets(sentence, BUFSIZ, stdin);
 
-
     // Gather the occuring letters
     for (int i = 0; sentence[i] != '\0'; i++) {
         counts[(int)sentence[i]]++;
@@ -65,30 +64,9 @@ int main() {
         head = remove_node(head);
         unique_letters--;
     }
-    //Link *final_head = (Link*) malloc(sizeof(Link));
     printf("Final Count - %d\n", head->data->freq);
     char path[1000];
-   dive(head->data, ' ', path, 0);
+    dive(head->data, ' ', path, 0);
 
     return 0;
-}
-
-void dive(Node *node, char dir, char path[], int pathlen) {
-    if (node == NULL) {
-        return;
-    }
-    path[pathlen] = dir;
-    pathlen++;
-
-    if (node->left == NULL && node->right == NULL) {
-        for (int i = 0; i < pathlen; i++) {
-            printf("%c", path[i]);
-        }
-        printf("- %c", node->letter);
-        printf("\n");
-    }
-    else {
-        dive(node->left, '0', path, pathlen);
-        dive(node->right, '1', path, pathlen);
-    }
 }

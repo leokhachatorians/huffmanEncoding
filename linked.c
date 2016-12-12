@@ -72,6 +72,26 @@ Link *remove_node(Link *head) {
     return head;
 }
 
+void dive(Node *node, char dir, char path[], int pathlen) {
+    if (node == NULL) {
+        return;
+    }
+    path[pathlen] = dir;
+    pathlen++;
+
+    if (node->left == NULL && node->right == NULL) {
+        printf("%c - ", node->letter);
+        for (int i = 0; i < pathlen; i++) {
+            printf("%c", path[i]);
+        }
+        printf("\n");
+    }
+    else {
+        dive(node->left, '0', path, pathlen);
+        dive(node->right, '1', path, pathlen);
+    }
+}
+
 void traverse(Link *head) {
     while (head != NULL) {
         printf("%c\t%d\n", head->data->letter, head->data->freq);

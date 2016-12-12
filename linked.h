@@ -23,6 +23,7 @@ Link *insert(Link *, char, int);
 Link *insert_at_end(Link *, char, int);
 Link *remove_node(Link *);
 Link *merge_nodes(Link *, Node *, Node *);
+void dive(Node *, char, char [], int);
 void traverse(Link *);
 
 #endif // LINKED_H

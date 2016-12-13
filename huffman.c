@@ -83,24 +83,25 @@ void dive(Node *node, Hashtable **table, char dir, char path[], int pathlen) {
         int num, count;
         count = 0;
         for (int i = 0; i < pathlen; i++) {
-            if (path[i] == '1' || path[i] == '0') {
-                count++;
-            }
+            count++;
         }
         int num_arr[count];
-        printf("Letter: %c", node->letter);
         for (int i = 0; i < pathlen; i++) {
-            num = (path[i] - '0');
+            if (path[i] == 32) { // handle the space char?
+                num = (path[i] - 31);
+            }
+            else {
+                num = (path[i] - '0');
+            }
             num_arr[i] = num;
-
-            printf("Num:%i Arr:%d\n", num, num_arr[i]);
         }
         unsigned int k = 0;
         for (int i = 0; i < count; i++) {
             k = 10 * k + num_arr[i];
         }
+        //printf("%u\n", k);
         insert_hash_value(table, node->letter, k);
-        //printf("%d \n", get_hash_value(table, node->letter));
+        printf("%d \n", get_hash_value(table, node->letter));
     }
     else {
         dive(node->left, table, '0', path, pathlen);

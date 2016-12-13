@@ -3,9 +3,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "linked.h"
-
-void dive(Node *, char, char [], int);
+#include "huffman.h"
 
 int main() {
     int total_letters = 0, unique_letters = 0;
@@ -66,7 +64,11 @@ int main() {
     }
     printf("Final Count - %d\n", head->data->freq);
     char path[1000];
-    dive(head->data, ' ', path, 0);
+
+    Hashtable *table = (Hashtable*) malloc(sizeof(Hashtable));
+    dive(head->data, &table, ' ', path, 0);
+
+    //printf("%lu\n", hash('a'));
 
     return 0;
 }

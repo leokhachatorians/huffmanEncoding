@@ -68,6 +68,11 @@ int main() {
     Hashtable *table = (Hashtable*) malloc(sizeof(Hashtable));
     dive(head->data, &table, ' ', path, 0);
 
+    for (int i = 0; sentence[i] != '\0'; i++) {
+        printf("%i ", get_hash_value(&table, sentence[i]));
+    }
+    printf("\n");
+
     //printf("%lu\n", hash('a'));
 
     return 0;

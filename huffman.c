@@ -95,14 +95,14 @@ void dive(Node *node, Hashtable **table, char dir, char path[], int pathlen) {
             }
             num_arr[i] = num;
         }
-        unsigned int k = 0;
+        unsigned int encoding = 0;
         for (int i = 0; i < count; i++) {
-            k = 10 * k + num_arr[i];
-            printf("%u\t", k);
+            encoding = 10 * encoding + num_arr[i];
+            //printf("%u\t", k);
         }
-        printf("%u\n", k);
-        insert_hash_value(table, node->letter, k);
-        printf("%i \n", get_hash_value(table, node->letter));
+        //printf("%u\n", k);
+        insert_hash_value(table, node->letter, encoding);
+        //printf("%i \n", get_hash_value(table, node->letter));
     }
     else {
         dive(node->left, table, '0', path, pathlen);
@@ -131,10 +131,10 @@ void insert_hash_value(Hashtable **table, char letter, unsigned int encoding) {
         (*table)->table[bucket].in_use = true;
         (*table)->table[bucket].value = encoding;
     }
-    printf("Bucket: %lu\n", bucket);
-    printf("Encoding: %i\n", encoding);
-    printf("Check Encoding: %i\n", (*table)->table[bucket].value);
-    printf("Char: %c\n\n", letter);
+   // printf("Bucket: %lu\n", bucket);
+   // printf("Encoding: %i\n", encoding);
+   // printf("Check Encoding: %i\n", (*table)->table[bucket].value);
+   // printf("Char: %c\n\n", letter);
 }
 
 int get_hash_value(Hashtable **table, char letter) {

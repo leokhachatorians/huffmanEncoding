@@ -98,10 +98,11 @@ void dive(Node *node, Hashtable **table, char dir, char path[], int pathlen) {
         unsigned int k = 0;
         for (int i = 0; i < count; i++) {
             k = 10 * k + num_arr[i];
+            printf("%u\t", k);
         }
-        //printf("%u\n", k);
+        printf("%u\n", k);
         insert_hash_value(table, node->letter, k);
-        printf("%d \n", get_hash_value(table, node->letter));
+        printf("%i \n", get_hash_value(table, node->letter));
     }
     else {
         dive(node->left, table, '0', path, pathlen);
@@ -124,18 +125,16 @@ unsigned long hash(char str) {
     return hash % 500;
 }
 
-void insert_hash_value(Hashtable **table, char letter, int encoding) {
-    int bucket = hash(letter);
-    for (int tries = 0; tries < 500; tries++) {
-        if ((*table)->table[bucket].in_use == false) {
-            (*table)->table[bucket].in_use = true;
-            (*table)->table[bucket].value = encoding;
-            //printf("%u", (*table)->table[bucket].value);
-        }
-        bucket = (bucket + 1) % 500;
+void insert_hash_value(Hashtable **table, char letter, unsigned int encoding) {
+    unsigned long bucket = hash(letter);
+    if ((*table)->table[bucket].in_use == false) {
+        (*table)->table[bucket].in_use = true;
+        (*table)->table[bucket].value = encoding;
     }
-   // printf("Bucket: %i\nEncoding: %3d\nChecking %i\n",
-   //         bucket, encoding, (*table)->table[bucket].value);
+    printf("Bucket: %lu\n", bucket);
+    printf("Encoding: %i\n", encoding);
+    printf("Check Encoding: %i\n", (*table)->table[bucket].value);
+    printf("Char: %c\n\n", letter);
 }
 
 int get_hash_value(Hashtable **table, char letter) {

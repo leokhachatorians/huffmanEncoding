@@ -62,7 +62,7 @@ int main() {
         head = remove_node(head);
         unique_letters--;
     }
-    printf("Final Count - %d\n", head->data->freq);
+    //printf("Final Count - %d\n", head->data->freq);
     char path[1000];
 
     Hashtable *table = (Hashtable*) malloc(sizeof(Hashtable));

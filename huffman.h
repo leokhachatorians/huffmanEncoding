@@ -36,7 +36,7 @@ Link *remove_node(Link *);
 Link *merge_nodes(Link *, Node *, Node *);
 
 unsigned long hash(char);
-void insert_hash_value(Hashtable **, char, int);
+void insert_hash_value(Hashtable **, char, unsigned int);
 int get_hash_value(Hashtable **, char);
 
 void dive(Node *, Hashtable **, char, char [], int);

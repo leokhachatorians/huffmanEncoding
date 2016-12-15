@@ -42,4 +42,12 @@ unsigned long int get_hash_value(Hashtable **, char);
 void dive(Node *, Hashtable **, char, int [], int);
 void traverse(Link *);
 
+void remove_newline(char *);
+
+void MergeSort(Link **);
+Link *SortedMerge(Link *, Link *);
+void FrontBackSplit(Link *, Link**, Link**);
+
+void traverse_tree(Node *);
+void find_loop(Link *);
 #endif // HUFFMAN_

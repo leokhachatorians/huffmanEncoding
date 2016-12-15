@@ -2,26 +2,6 @@
 #include <stdlib.h>
 #include "huffman.h"
 
-Link *create_link(char letter, int freq) {
-    Node *d = (Node*) malloc(sizeof(Node));
-    d->letter = letter;
-    d->freq = freq;
-
-    Link *new_node = (Link*) malloc(sizeof(Link));
-    new_node->data = d;
-    return new_node;
-}
-
-Link *merge_nodes(Link *head, Node *first, Node *second, Link *merge, Node *merge_node) {
-    merge_node->left = first;
-    merge_node->right = second;
-    merge_node->freq = first->freq + second->freq;
-
-    merge->data = merge_node;
-    merge->next = head;
-    return merge;
-}
-
 Link *insert(Link *head, char letter, int freq) {
     Link *new_link = (Link*) malloc(sizeof(Link));
     Node *d = (Node*) malloc(sizeof(Node));
@@ -35,31 +15,13 @@ Link *insert(Link *head, char letter, int freq) {
     new_link->next = NULL;
     new_link->next = head;
     return new_link;
-   // Link *new_node = create_link(letter, freq);
-   // new_node->next = head;
-
-   // return new_node;
 }
 void insert2(Link **head, Link *new_link) {
     new_link->next = NULL;
     new_link->next = *head;
     *head = new_link;
 }
-//
-//Link *insert_at_end(Link *head, char letter, int freq) {
-//    if (head == NULL) {
-//        return insert(head, letter, freq);
-//    }
-//
-//    Link *cursor = head;
-//    while (cursor->next != NULL) {
-//        cursor = cursor->next;
-//    }
-//
-//    cursor->next = create_link(letter, freq);
-//    return head;
-//}
-//
+
 Link *remove_node(Link *head) {
     if (head == NULL) {
         return head;
@@ -68,7 +30,7 @@ Link *remove_node(Link *head) {
     if (head->data->del) {
         Link *found = head;
         head = found->next;
-        //free(found);
+        free(found);
         return head;
     }
 
@@ -84,7 +46,7 @@ Link *remove_node(Link *head) {
         //printf("Node to delete: %c\n", found->data->letter);
         cursor->next = found->next;
         //printf("New Node: %c\n", cursor->next->data->letter);
-        //free(found);
+        free(found);
     }
     return head;
 }
@@ -114,11 +76,12 @@ void dive(Node *node, Hashtable **table, char dir, int path[], int pathlen) {
             num_arr[i] = num;
         }
         //printf("HERE:%llu\n", num);
-        unsigned int encoding = 0;
+        unsigned long int encoding = 0;
         for (int i = 0; i < count; i++) {
             encoding = 10 * encoding + num_arr[i];
             //printf("%u\t", k);
         }
+        //printf("Encoding: %lu - Letter %c\n", encoding, node->letter);
         //printf("%u\n", k);
         insert_hash_value(table, node->letter, encoding);
         //printf("%i \n", get_hash_value(table, node->letter));
@@ -144,20 +107,24 @@ unsigned long hash(char str) {
     return hash % 500;
 }
 
-void insert_hash_value(Hashtable **table, char letter, unsigned int encoding) {
+void insert_hash_value(Hashtable **table, char letter, unsigned long int encoding) {
     unsigned long bucket = hash(letter);
-    if ((*table)->table[bucket].in_use == false) {
-        (*table)->table[bucket].in_use = true;
-        (*table)->table[bucket].value = encoding;
+    for (int i = 0; i < 500; i++) {
+        if ((*table)->table[bucket].in_use == false) {
+            (*table)->table[bucket].in_use = true;
+            (*table)->table[bucket].value = encoding;
+            return;
+        }
+        bucket = (bucket + 1) % 500;
     }
-    printf("Inside 'insert_hash_value' and after modifying table\n");
-    printf("Bucket: %lu\n", bucket);
-    printf("Encoding: %u\n", encoding);
-    printf("Check Encoding: %u\n", (*table)->table[bucket].value);
-    printf("Char: %c - %d\n\n", letter, letter);
+   // printf("Inside 'insert_hash_value' and after modifying table\n");
+   // printf("Bucket: %lu\n", bucket);
+   // printf("Encoding: %llu\n", encoding);
+   // printf("Check Encoding: %llu\n", (*table)->table[bucket].value);
+   // printf("Char: %c - %d\n\n", letter, letter);
 }
 
-int get_hash_value(Hashtable **table, char letter) {
+unsigned long int get_hash_value(Hashtable **table, char letter) {
     unsigned int c = hash(letter);
     return (*table)->table[c].value;
 }

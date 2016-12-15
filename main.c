@@ -150,7 +150,7 @@ int main() {
         }
     }
     
-    MergeSort(&head);
+    //MergeSort(&head);
     //traverse(head);
     Node *n_first = (Node*) malloc(sizeof(Node));
     Node *n_second = (Node*) malloc(sizeof(Node));
@@ -180,8 +180,8 @@ int main() {
             }
             cursor = cursor->next;
         }
-        printf("Char: %c - %d times\n", n_first->letter, n_first->freq);
-        printf("Char: %c - %d times\n\n", n_second->letter, n_second->freq);
+       // printf("Char: %c - %d times\n", n_first->letter, n_first->freq);
+       // printf("Char: %c - %d times\n\n", n_second->letter, n_second->freq);
     
         //Link *merge = (Link*) malloc(sizeof(Link));
         //insert_at_front(&head, n_first, n_second);
@@ -203,11 +203,11 @@ int main() {
 
         unique_chars--;
     }
-    printf("%d\n", total_chars);
-    printf("SORTED TRAVERSE\n");
-    traverse(head);
-    find_loop(head);
-    traverse_tree(head->data);
+   // printf("%d\n", total_chars);
+   // printf("SORTED TRAVERSE\n");
+   // traverse(head);
+   // find_loop(head);
+   // traverse_tree(head->data);
 
     printf("worked\n");
    // printf("Char %c\n", head->data->left->letter);
@@ -220,7 +220,7 @@ int main() {
     dive(head->data, &table, ' ', path, 0);
     for (int i = 0; i < 128; i++) {
         if (counts[i] > 0) {
-            printf("Char: %c - %i encoding\n", i, get_hash_value(&table, i));
+            printf("Char: %c - %lu encoding\n", i, get_hash_value(&table, i));
         }
     }
 

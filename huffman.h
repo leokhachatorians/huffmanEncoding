@@ -21,7 +21,7 @@ struct Link {
 typedef struct Bucket Bucket;
 struct Bucket {
     bool in_use;
-    unsigned int value;
+    unsigned long int value;
 };
 
 typedef struct Hashtable Hashtable;
@@ -37,10 +37,10 @@ Link *remove_node(Link *);
 Link *merge_nodes(Link *, Node *, Node *, Link *, Node *);
 
 unsigned long hash(char);
-void insert_hash_value(Hashtable **, char, unsigned int);
-int get_hash_value(Hashtable **, char);
+void insert_hash_value(Hashtable **, char, unsigned long int);
+unsigned long int get_hash_value(Hashtable **, char);
 
 void dive(Node *, Hashtable **, char, int [], int);
 void traverse(Link *);
 
-#endif // HUFFMAN_H
+#endif // HUFFMAN_

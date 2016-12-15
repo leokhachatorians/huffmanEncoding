@@ -11,6 +11,7 @@ int main() {
     int counts[256] = {0};
     char file_name[BUFSIZ];
     FILE *fp;
+    int path[1000];
 
     printf("Enter a filename: ");
     fgets(file_name, BUFSIZ, stdin);
@@ -35,70 +36,73 @@ int main() {
     // Insert unique letters into our linked list
     for (int i = 0; i < 256; i++) {
         if (counts[i] > 0) {
-            head = insert(head, i, counts[i]);
+            head = create_link_and_push_to_front(head, i, counts[i]);
             unique_chars++;
         }
     }
+    MergeSort(&head);
     
     Node *n_first = (Node*) malloc(sizeof(Node));
     Node *n_second = (Node*) malloc(sizeof(Node));
 
     while (unique_chars != 1) {
-        Node *merge_node = (Node*) malloc(sizeof(Node));
-        merge_node->left = merge_node->right = NULL;
-        merge_node->letter = ' ';
-        merge_node->freq = 0;
-        merge_node->del = false;
-        Link *merge = (Link*) malloc(sizeof(Link));
-
         int min1 = BUFSIZ - 1, min2 = BUFSIZ;
         Link *cursor = head;
 
         // Iterate through the linked list to determine
         // fewest occuring letters
-        while (cursor != NULL) {
-            if (cursor->data->freq < min1) {
-                min2 = min1;
-                n_second = n_first;
+       // while (cursor != NULL) {
+       //     if (cursor->data->freq < min1) {
+       //         min2 = min1;
+       //         n_second = n_first;
 
-                min1 = cursor->data->freq;
-                n_first = cursor->data;
-            }
-            else if (cursor->data->freq < min2) {
-                min2 = cursor->data->freq;
-                n_second = cursor->data;
-            }
-            cursor = cursor->next;
-        }
+       //         min1 = cursor->data->freq;
+       //         n_first = cursor->data;
+       //     }
+       //     else if (cursor->data->freq < min2) {
+       //         min2 = cursor->data->freq;
+       //         n_second = cursor->data;
+       //     }
+       //     cursor = cursor->next;
+       // }
+       n_first = head->data;
+       n_second = head->next->data;
+
     
-        merge_node->left = n_first;
-        merge_node->right = n_second;
-        merge_node->freq = n_first->freq + n_second->freq;
-        merge_node->letter = ' ';
-        merge->data = merge_node;
+        Link *merge = combine_smallest_linked_nodes(n_first, n_second); 
 
         n_first->del = true;
         n_second->del = true;
         head = remove_node(head);
         head = remove_node(head);
-        insert2(&head, merge);
+        head = push_merge_to_linked_list(head, merge);
         unique_chars--;
+        MergeSort(&head);
     }
-
-    int path[1000];
 
     Hashtable *table = (Hashtable*) malloc(sizeof(Hashtable));
-    for (int i = 0; i < 500; i++) {
-        table->table[i].in_use = false;
-        table->table[i].value = 0;
-    }
+    table = init_hashtable_table(table);
 
     dive(head->data, &table, ' ', path, 0);
-    for (int i = 0; i < 128; i++) {
-        if (counts[i] > 0) {
-            printf("Char: %c - %lu encoding\n", i, get_hash_value(&table, i));
-        }
+    display_encoding_per_character(counts, table);
+
+    fp = fopen(file_name, "r");
+    if (fp == NULL) {
+        printf("Error loading the file\n");
+        exit(EXIT_FAILURE);
     }
+
+    FILE *write;
+    write = fopen("test.bin","w");
+    while ((c = fgetc(fp))) {
+        if (c == EOF) {
+            break;
+        }
+        int value = get_hash_value(table, c);
+        fwrite(&value, sizeof(value), 1, write);
+        printf("%lu", get_hash_value(table, c));
+    }
+    fclose(fp);
     printf("\n");
     return 0;
 }

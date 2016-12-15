@@ -3,7 +3,26 @@
 #include <string.h>
 #include "huffman.h"
 
-Link *insert(Link *head, char letter, int freq) {
+Link *combine_smallest_linked_nodes(Node *first, Node *second) {
+    Link *merge = (Link*) malloc(sizeof(Link));
+    Node *merge_node = (Node*) malloc(sizeof(Node));
+
+    // Initialise our node
+    merge_node->left = merge_node->right = NULL;
+    merge_node->letter = ' ';
+    merge_node->freq = 0;
+    merge_node->del = false;
+    
+    // Populate our node
+    merge_node->left = first;
+    merge_node->right = second;
+    merge_node->freq = first->freq + second->freq;
+    merge_node->letter = ' ';
+    merge->data = merge_node;
+    return merge;
+}
+
+Link *create_link_and_push_to_front(Link *head, char letter, int freq) {
     Link *new_link = (Link*) malloc(sizeof(Link));
     Node *d = (Node*) malloc(sizeof(Node));
     d->letter = letter;
@@ -16,9 +35,10 @@ Link *insert(Link *head, char letter, int freq) {
     return new_link;
 }
 
-void insert2(Link **head, Link *new_link) {
-    new_link->next = *head;
-    *head = new_link;
+Link *push_merge_to_linked_list(Link *head, Link *new_link) {
+    new_link->next = head;
+    head = new_link;
+    return head;
 }
 
 Link *remove_node(Link *head) {
@@ -114,16 +134,11 @@ void insert_hash_value(Hashtable **table, char letter, unsigned long int encodin
         }
         bucket = (bucket + 1) % 500;
     }
-   // printf("Inside 'insert_hash_value' and after modifying table\n");
-   // printf("Bucket: %lu\n", bucket);
-   // printf("Encoding: %llu\n", encoding);
-   // printf("Check Encoding: %llu\n", (*table)->table[bucket].value);
-   // printf("Char: %c - %d\n\n", letter, letter);
 }
 
-unsigned long int get_hash_value(Hashtable **table, char letter) {
+unsigned long int get_hash_value(Hashtable *table, char letter) {
     unsigned int c = hash(letter);
-    return (*table)->table[c].value;
+    return table->table[c].value;
 }
 
 
@@ -198,7 +213,6 @@ void FrontBackSplit(Link *source, Link **frontRef, Link **backRef) {
                 fast = fast->next;
             }
         }
-
         *frontRef = source;
         *backRef = slow->next;
         slow->next = NULL;
@@ -219,6 +233,22 @@ void remove_newline(char *array) {
     for (int i = 0; i < length; i++) {
         if (array[i] == '\n') {
             array[i] = '\0';
+        }
+    }
+}
+
+Hashtable *init_hashtable_table(Hashtable *table) {
+    for (int i = 0; i < 500; i++) {
+        table->table[i].in_use = false;
+        table->table[i].value = 0;
+    }
+    return table;
+}
+
+void display_encoding_per_character(int counts[], Hashtable *table) {
+    for (int i = 0; i < 256; i++) {
+        if (counts[i] > 0) {
+            printf("Char: %c - %lu encoding\n", i, get_hash_value(table, i));
         }
     }
 }

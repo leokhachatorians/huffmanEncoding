@@ -9,15 +9,12 @@ Link *insert(Link *head, char letter, int freq) {
     d->freq = freq;
     d->left = d->right = NULL;
     d->del = false;
-    d->use = false;
     new_link->data = d;
 
-    new_link->next = NULL;
     new_link->next = head;
     return new_link;
 }
 void insert2(Link **head, Link *new_link) {
-    new_link->next = NULL;
     new_link->next = *head;
     *head = new_link;
 }
@@ -30,7 +27,7 @@ Link *remove_node(Link *head) {
     if (head->data->del) {
         Link *found = head;
         head = found->next;
-        free(found);
+        //free(found);
         return head;
     }
 
@@ -46,7 +43,7 @@ Link *remove_node(Link *head) {
         //printf("Node to delete: %c\n", found->data->letter);
         cursor->next = found->next;
         //printf("New Node: %c\n", cursor->next->data->letter);
-        free(found);
+        //free(found);
     }
     return head;
 }

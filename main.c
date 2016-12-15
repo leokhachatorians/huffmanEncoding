@@ -159,10 +159,14 @@ int main() {
 
     while (unique_chars != 1) {
         Node *merge_node = (Node*) malloc(sizeof(Node));
+        merge_node->left = merge_node->right = NULL;
+        merge_node->letter = ' ';
+        merge_node->freq = 0;
+        merge_node->del = false;
         Link *merge = (Link*) malloc(sizeof(Link));
+
         int min1 = BUFSIZ - 1, min2 = BUFSIZ;
         Link *cursor = head;
-       // Node *merge_node = (Node*) malloc(sizeof(Node));
 
         // Iterate through the linked list to determine
         // fewest occuring letters
@@ -183,13 +187,12 @@ int main() {
        // printf("Char: %c - %d times\n", n_first->letter, n_first->freq);
        // printf("Char: %c - %d times\n\n", n_second->letter, n_second->freq);
     
-        //Link *merge = (Link*) malloc(sizeof(Link));
-        //insert_at_front(&head, n_first, n_second);
         merge_node->left = n_first;
         merge_node->right = n_second;
         merge_node->freq = n_first->freq + n_second->freq;
         merge_node->letter = ' ';
         merge->data = merge_node;
+
         n_first->del = true;
         n_second->del = true;
         head = remove_node(head);

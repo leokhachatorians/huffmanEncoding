@@ -37,8 +37,7 @@ Link *create_link_and_push_to_front(Link *head, char letter, int freq) {
 
 Link *push_merge_to_linked_list(Link *head, Link *new_link) {
     new_link->next = head;
-    head = new_link;
-    return head;
+    return new_link;
 }
 
 Link *remove_node(Link *head) {
@@ -74,35 +73,15 @@ void dive(Node *node, Hashtable **table, char dir, char path[], int pathlen) {
     }
     path[pathlen] = dir;
     pathlen++;
-
+    char second[pathlen];
 
     if (node->left == NULL && node->right == NULL) {
-
         for (int i = 1; i < pathlen; i++) {
-            //printf("%c", path[i]);
+            second[i-1] = path[i];
         }
-        path[pathlen + 1] = '\0';
+        path[pathlen] = '\0';
 
-       // int num;
-       // int count = 0;
-       // for (int i = 0; i < pathlen; i++) {
-       //     count++;
-       // }
-       // int num_arr[count];
-       // for (int i = 1; i < pathlen; i++) {
-       //     if (path[i] == 32) { // handle the space char?
-       //         num = (path[i] - 31);
-       //     }
-       //     else {
-       //         num = (path[i] - '0');
-       //     }
-       //     num_arr[i] = num;
-       // }
-       // unsigned long int encoding = 0;
-       // for (int i = 1; i < count; i++) {
-       //     encoding = 10 * encoding + num_arr[i];
-       // }
-       insert_hash_value(table, node->letter, path);
+        insert_hash_value(table, node->letter, second, pathlen);
     }
     else {
         dive(node->left, table, '0', path, pathlen);
@@ -126,24 +105,21 @@ unsigned long hash(char str) {
 }
 
 //void insert_hash_value(Hashtable **table, char letter, unsigned long int encoding) {
-void insert_hash_value(Hashtable **table, char letter, char arr[]) {
+void insert_hash_value(Hashtable **table, char letter, char arr[], int size) {
     unsigned long bucket = hash(letter);
-    for (int i = 0; i < 500; i++) {
-        if ((*table)->table[bucket].in_use == false) {
-            for (int i = 1; i < 1000; i++) {
-                (*table)->table[bucket].encoding[i] = arr[i];
-            }
-            (*table)->table[bucket].in_use = true;
-            return;
+    if ((*table)->table[bucket].in_use == false) {
+        for (int i = 0; i < size; i++) {
+            (*table)->table[bucket].encoding[i] = arr[i];
+            (*table)->table[bucket].size = size;
         }
-        bucket = (bucket + 1) % 500;
+        (*table)->table[bucket].in_use = true;
     }
 }
 
 //unsigned long int get_hash_value(Hashtable *table, char letter) {
-char *get_hash_value(Hashtable *table, char letter) {
+Bucket get_hash_value(Hashtable *table, char letter) {
     unsigned int c = hash(letter);
-    return table->table[c].encoding;
+    return table->table[c];
 }
 
 void find_loop(Link *head) {
@@ -243,7 +219,6 @@ void remove_newline(char *array) {
 Hashtable *init_hashtable_table(Hashtable *table) {
     for (int i = 0; i < 500; i++) {
         table->table[i].in_use = false;
-        table->table[i].value = 0;
     }
     return table;
 }
@@ -251,13 +226,9 @@ Hashtable *init_hashtable_table(Hashtable *table) {
 void display_encoding_per_character(int counts[], Hashtable *table) {
     for (int i = 0; i < 256; i++) {
         if (counts[i] > 0) {
-            char *arr = get_hash_value(table, i);
-            //printf("TEST: %c", *(arr + 1));
-            printf("Char: %c - ", i);
-            for (int i = 0; i < 999; i++) {
-                printf("%c", *(arr+i));
+            Bucket bucket = get_hash_value(table, i);
+            for (int i = 0; i < bucket.size -1; i++) {
             }
-            printf("\n");
         }
     }
 }

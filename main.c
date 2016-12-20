@@ -11,7 +11,7 @@ int main() {
     int counts[256] = {0};
     char file_name[BUFSIZ];
     FILE *fp;
-    char path[1000];
+    char path[10];
 
     printf("Enter a filename: ");
     fgets(file_name, BUFSIZ, stdin);
@@ -55,8 +55,15 @@ int main() {
     head = remove_node(head);
     head = remove_node(head);
     head = push_merge_to_linked_list(head, merge);
-    unique_chars--;
+    printf("Smallest: %c Freq: %d\n",
+            merge->data->left->letter,
+            merge->data->left->freq);
+    printf("Larger: %c Freq: %d\n",
+            merge->data->right->letter,
+            merge->data->right->freq);
+    printf("Merge: %d\n\n", merge->data->freq);
     MergeSort(&head);
+    unique_chars--;
     }
 
     Hashtable *table = (Hashtable*) malloc(sizeof(Hashtable));
@@ -77,14 +84,16 @@ int main() {
         if (c == EOF) {
             break;
         }
-        char *arr = get_hash_value(table, c);
+        Bucket bucket = get_hash_value(table, c);
+        char *arr = bucket.encoding;
         //fwrite(&value, sizeof(value), 1, write);
-        for (int i = 0; i < 999; i++) {
-            if (*(arr+i) != NULL) {
-                unsigned char c = *(arr+i);
-                fwrite(&c, sizeof(unsigned char), 1, write);
-                printf("%c", *(arr + i));
-            }
+        for (int i = 0; i < bucket.size-1; i++) {
+            //char c = *(arr+i);
+            char *ptr;
+            long int l = strtol(arr, &ptr, 2);
+            unsigned char b = l & 0xffl;
+            fwrite(&b, 1, 1, write);
+            printf("%c", *(arr + i));
 
         }
         //printf("%lu", get_hash_value(table, c));

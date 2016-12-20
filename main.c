@@ -11,7 +11,7 @@ int main() {
     int counts[256] = {0};
     char file_name[BUFSIZ];
     FILE *fp;
-    int path[1000];
+    char path[1000];
 
     printf("Enter a filename: ");
     fgets(file_name, BUFSIZ, stdin);
@@ -46,38 +46,17 @@ int main() {
     Node *n_second = (Node*) malloc(sizeof(Node));
 
     while (unique_chars != 1) {
-        int min1 = BUFSIZ - 1, min2 = BUFSIZ;
-        Link *cursor = head;
-
-        // Iterate through the linked list to determine
-        // fewest occuring letters
-       // while (cursor != NULL) {
-       //     if (cursor->data->freq < min1) {
-       //         min2 = min1;
-       //         n_second = n_first;
-
-       //         min1 = cursor->data->freq;
-       //         n_first = cursor->data;
-       //     }
-       //     else if (cursor->data->freq < min2) {
-       //         min2 = cursor->data->freq;
-       //         n_second = cursor->data;
-       //     }
-       //     cursor = cursor->next;
-       // }
        n_first = head->data;
        n_second = head->next->data;
+    Link *merge = combine_smallest_linked_nodes(n_first, n_second); 
 
-    
-        Link *merge = combine_smallest_linked_nodes(n_first, n_second); 
-
-        n_first->del = true;
-        n_second->del = true;
-        head = remove_node(head);
-        head = remove_node(head);
-        head = push_merge_to_linked_list(head, merge);
-        unique_chars--;
-        MergeSort(&head);
+    n_first->del = true;
+    n_second->del = true;
+    head = remove_node(head);
+    head = remove_node(head);
+    head = push_merge_to_linked_list(head, merge);
+    unique_chars--;
+    MergeSort(&head);
     }
 
     Hashtable *table = (Hashtable*) malloc(sizeof(Hashtable));
@@ -93,14 +72,22 @@ int main() {
     }
 
     FILE *write;
-    write = fopen("test.bin","w");
+    write = fopen("written.bin","wb");
     while ((c = fgetc(fp))) {
         if (c == EOF) {
             break;
         }
-        int value = get_hash_value(table, c);
-        fwrite(&value, sizeof(value), 1, write);
-        printf("%lu", get_hash_value(table, c));
+        char *arr = get_hash_value(table, c);
+        //fwrite(&value, sizeof(value), 1, write);
+        for (int i = 0; i < 999; i++) {
+            if (*(arr+i) != NULL) {
+                unsigned char c = *(arr+i);
+                fwrite(&c, sizeof(unsigned char), 1, write);
+                printf("%c", *(arr + i));
+            }
+
+        }
+        //printf("%lu", get_hash_value(table, c));
     }
     fclose(fp);
     printf("\n");

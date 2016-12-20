@@ -20,6 +20,7 @@ struct Link {
 typedef struct Bucket Bucket;
 struct Bucket {
     bool in_use;
+    char encoding[999];
     unsigned long int value;
 };
 
@@ -38,10 +39,12 @@ Link *merge_nodes(Link *, Node *, Node *, Link *, Node *);
 Link *combine_smallest_linked_nodes(Node *, Node*);
 
 unsigned long hash(char);
-void insert_hash_value(Hashtable **, char, unsigned long int);
-unsigned long int get_hash_value(Hashtable *, char);
+void insert_hash_value(Hashtable **, char, char []);
+//void insert_hash_value(Hashtable **, char, unsigned long int);
+//unsigned long int get_hash_value(Hashtable *, char);
+char *get_hash_value(Hashtable *, char);
 
-void dive(Node *, Hashtable **, char, int [], int);
+void dive(Node *, Hashtable **, char, char [], int);
 
 // Sorting
 void MergeSort(Link **);

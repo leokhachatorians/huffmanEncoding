@@ -68,40 +68,41 @@ Link *remove_node(Link *head) {
     return head;
 }
 
-void dive(Node *node, Hashtable **table, char dir, int path[], int pathlen) {
+void dive(Node *node, Hashtable **table, char dir, char path[], int pathlen) {
     if (node == NULL) {
         return;
     }
     path[pathlen] = dir;
     pathlen++;
 
+
     if (node->left == NULL && node->right == NULL) {
-        int num;
-        int count = 0;
-        for (int i = 0; i < pathlen; i++) {
-            count++;
+
+        for (int i = 1; i < pathlen; i++) {
+            //printf("%c", path[i]);
         }
-        int num_arr[count];
-        for (int i = 0; i < pathlen; i++) {
-            if (path[i] == 32) { // handle the space char?
-                num = (path[i] - 31);
-            }
-            else {
-                num = (path[i] - '0');
-            }
-           //num = path[i];
-            num_arr[i] = num;
-        }
-        //printf("HERE:%llu\n", num);
-        unsigned long int encoding = 0;
-        for (int i = 0; i < count; i++) {
-            encoding = 10 * encoding + num_arr[i];
-            //printf("%u\t", k);
-        }
-        //printf("Encoding: %lu - Letter %c\n", encoding, node->letter);
-        //printf("%u\n", k);
-        insert_hash_value(table, node->letter, encoding);
-        //printf("%i \n", get_hash_value(table, node->letter));
+        path[pathlen + 1] = '\0';
+
+       // int num;
+       // int count = 0;
+       // for (int i = 0; i < pathlen; i++) {
+       //     count++;
+       // }
+       // int num_arr[count];
+       // for (int i = 1; i < pathlen; i++) {
+       //     if (path[i] == 32) { // handle the space char?
+       //         num = (path[i] - 31);
+       //     }
+       //     else {
+       //         num = (path[i] - '0');
+       //     }
+       //     num_arr[i] = num;
+       // }
+       // unsigned long int encoding = 0;
+       // for (int i = 1; i < count; i++) {
+       //     encoding = 10 * encoding + num_arr[i];
+       // }
+       insert_hash_value(table, node->letter, path);
     }
     else {
         dive(node->left, table, '0', path, pathlen);
@@ -124,23 +125,26 @@ unsigned long hash(char str) {
     return hash % 500;
 }
 
-void insert_hash_value(Hashtable **table, char letter, unsigned long int encoding) {
+//void insert_hash_value(Hashtable **table, char letter, unsigned long int encoding) {
+void insert_hash_value(Hashtable **table, char letter, char arr[]) {
     unsigned long bucket = hash(letter);
     for (int i = 0; i < 500; i++) {
         if ((*table)->table[bucket].in_use == false) {
+            for (int i = 1; i < 1000; i++) {
+                (*table)->table[bucket].encoding[i] = arr[i];
+            }
             (*table)->table[bucket].in_use = true;
-            (*table)->table[bucket].value = encoding;
             return;
         }
         bucket = (bucket + 1) % 500;
     }
 }
 
-unsigned long int get_hash_value(Hashtable *table, char letter) {
+//unsigned long int get_hash_value(Hashtable *table, char letter) {
+char *get_hash_value(Hashtable *table, char letter) {
     unsigned int c = hash(letter);
-    return table->table[c].value;
+    return table->table[c].encoding;
 }
-
 
 void find_loop(Link *head) {
     Link *slow, *fast;
@@ -155,7 +159,6 @@ void find_loop(Link *head) {
     }
     printf("no loop\n");
 }
-    
 
 void MergeSort(Link** headRef) {
     Link *head = *headRef;
@@ -248,7 +251,13 @@ Hashtable *init_hashtable_table(Hashtable *table) {
 void display_encoding_per_character(int counts[], Hashtable *table) {
     for (int i = 0; i < 256; i++) {
         if (counts[i] > 0) {
-            printf("Char: %c - %lu encoding\n", i, get_hash_value(table, i));
+            char *arr = get_hash_value(table, i);
+            //printf("TEST: %c", *(arr + 1));
+            printf("Char: %c - ", i);
+            for (int i = 0; i < 999; i++) {
+                printf("%c", *(arr+i));
+            }
+            printf("\n");
         }
     }
 }

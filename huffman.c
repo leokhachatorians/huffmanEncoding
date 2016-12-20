@@ -76,6 +76,9 @@ void dive(Node *node, Hashtable **table, char dir, char path[], int pathlen) {
     char second[pathlen];
 
     if (node->left == NULL && node->right == NULL) {
+        // Make a new array that bypasses the first char
+        // since that's the placeholder char for when
+        // we first call this function in main.c
         for (int i = 1; i < pathlen; i++) {
             second[i-1] = path[i];
         }
@@ -116,8 +119,7 @@ void insert_hash_value(Hashtable **table, char letter, char arr[], int size) {
     }
 }
 
-//unsigned long int get_hash_value(Hashtable *table, char letter) {
-Bucket get_hash_value(Hashtable *table, char letter) {
+Bucket get_bucket(Hashtable *table, char letter) {
     unsigned int c = hash(letter);
     return table->table[c];
 }
@@ -226,9 +228,12 @@ Hashtable *init_hashtable_table(Hashtable *table) {
 void display_encoding_per_character(int counts[], Hashtable *table) {
     for (int i = 0; i < 256; i++) {
         if (counts[i] > 0) {
-            Bucket bucket = get_hash_value(table, i);
+            Bucket bucket = get_bucket(table, i);
+            printf("Char: %c - ", i);
             for (int i = 0; i < bucket.size -1; i++) {
+                printf("%c", *(bucket.encoding+i));
             }
+            printf("\n");
         }
     }
 }

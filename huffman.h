@@ -40,9 +40,7 @@ Link *combine_smallest_linked_nodes(Node *, Node*);
 
 unsigned long hash(char);
 void insert_hash_value(Hashtable **, char, char [], int);
-//void insert_hash_value(Hashtable **, char, unsigned long int);
-//unsigned long int get_hash_value(Hashtable *, char);
-Bucket get_hash_value(Hashtable *, char);
+Bucket get_bucket(Hashtable *, char);
 
 void dive(Node *, Hashtable **, char, char [], int);
 

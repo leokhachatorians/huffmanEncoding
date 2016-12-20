@@ -84,7 +84,7 @@ int main() {
         if (c == EOF) {
             break;
         }
-        Bucket bucket = get_hash_value(table, c);
+        Bucket bucket = get_bucket(table, c);
         char *arr = bucket.encoding;
         //fwrite(&value, sizeof(value), 1, write);
         for (int i = 0; i < bucket.size-1; i++) {
@@ -96,7 +96,7 @@ int main() {
             printf("%c", *(arr + i));
 
         }
-        //printf("%lu", get_hash_value(table, c));
+        //printf("%lu", get_bucket(table, c));
     }
     fclose(fp);
     printf("\n");

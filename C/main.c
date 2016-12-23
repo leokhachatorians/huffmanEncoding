@@ -19,26 +19,26 @@ int main() {
 
     fp = fopen(file_name, "r");
     if (fp == NULL) {
-        printf("Error loading the file\n");
-        exit(EXIT_FAILURE);
+	printf("Error loading the file\n");
+	exit(EXIT_FAILURE);
     }
 
     int c;
     while ((c = fgetc(fp))) {
-        if (c == EOF) {
-            break;
-        }
-        counts[c] += 1;
-        total_chars += 1;
+	if (c == EOF) {
+	    break;
+	}
+	counts[c] += 1;
+	total_chars += 1;
     }
     fclose(fp);
     
     // Insert unique letters into our linked list
     for (int i = 0; i < 256; i++) {
-        if (counts[i] > 0) {
-            head = create_link_and_push_to_front(head, i, counts[i]);
-            unique_chars++;
-        }
+	if (counts[i] > 0) {
+	    head = create_link_and_push_to_front(head, i, counts[i]);
+	    unique_chars++;
+	}
     }
     MergeSort(&head);
     
@@ -56,11 +56,11 @@ int main() {
     head = remove_node(head);
     head = push_merge_to_linked_list(head, merge);
     printf("Smallest: %c Freq: %d\n",
-            merge->data->left->letter,
-            merge->data->left->freq);
+	    merge->data->left->letter,
+	    merge->data->left->freq);
     printf("Larger: %c Freq: %d\n",
-            merge->data->right->letter,
-            merge->data->right->freq);
+	    merge->data->right->letter,
+	    merge->data->right->freq);
     printf("Merge: %d\n\n", merge->data->freq);
     MergeSort(&head);
     unique_chars--;
@@ -74,29 +74,29 @@ int main() {
 
     fp = fopen(file_name, "r");
     if (fp == NULL) {
-        printf("Error loading the file\n");
-        exit(EXIT_FAILURE);
+	printf("Error loading the file\n");
+	exit(EXIT_FAILURE);
     }
 
     FILE *write;
     write = fopen("written.bin","wb");
     while ((c = fgetc(fp))) {
-        if (c == EOF) {
-            break;
-        }
-        Bucket bucket = get_bucket(table, c);
-        char *arr = bucket.encoding;
-        //fwrite(&value, sizeof(value), 1, write);
-        for (int i = 0; i < bucket.size-1; i++) {
-            //char c = *(arr+i);
-            char *ptr;
-            long int l = strtol(arr, &ptr, 2);
-            unsigned char b = l & 0xffl;
-            fwrite(&b, 1, 1, write);
-            printf("%c", *(arr + i));
+	if (c == EOF) {
+	    break;
+	}
+	Bucket bucket = get_bucket(table, c);
+	char *arr = bucket.encoding;
+	//fwrite(&value, sizeof(value), 1, write);
+	for (int i = 0; i < bucket.size-1; i++) {
+	    //char c = *(arr+i);
+	    char *ptr;
+	    long int l = strtol(arr, &ptr, 2);
+	    unsigned char b = l & 0xffl;
+	    fwrite(&b, 1, 1, write);
+	    printf("%c", *(arr + i));
 
-        }
-        //printf("%lu", get_bucket(table, c));
+	}
+	//printf("%lu", get_bucket(table, c));
     }
     fclose(fp);
     printf("\n");

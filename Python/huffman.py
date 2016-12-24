@@ -1,6 +1,15 @@
 import sys
+import re
 
-class TreeBuilder():
+class Node():
+    def __init__(self,  word, freq):
+        self.word = word
+        self.freq = freq
+        self.left = None
+        self.right = None
+        self.delete = False
+
+class HuffmanTree():
     def __init__(self, _input, is_a_file=False):
         self._input = _input
         self.is_a_file = is_a_file
@@ -25,13 +34,15 @@ class TreeBuilder():
         word_dict = {}
         if is_file:
             for line in contents:
-                for word in line.split():
+                #for word in line.split():
+                for word in re.split(r'(\s+)', line):
                     if word not in word_dict:
                         word_dict[word] = 1
                     else:
                         word_dict[word] += 1
         else:
-            for word in contents.split():
+            #for word in contents.split():
+            for word in re.split(r'(\s+)', contents):
                 if word not in word_dict:
                     word_dict[word] = 1
                 else:
@@ -62,13 +73,10 @@ class TreeBuilder():
                     second = self.node_list[i].freq
                     n_2 = self.node_list[i]
 
-            print("First: {} - {}".format(n_1.word, first))
-            print("Second: {} - {}".format(n_2.word, second))
-
             root_node = Node('', n_1.freq + n_2.freq)
             root_node.left = n_1
             root_node.right = n_2
-            self.node_list.append(root_node)
+            self.node_list.insert(0,root_node)
 
             n_1.delete = n_2.delete = True
 
@@ -76,41 +84,39 @@ class TreeBuilder():
                 if i.delete:
                     self.node_list.remove(i)
 
-            #print("Nodes: ", len(self.node_list))
-            #for i in self.node_list:
-            #    print(i.word, ' ', i.freq)
-            #print()
             num_entries -= 1
 
-    def _preorder_traverse(self, node):
+    def _encode_tree(self):
+        path = ['' for i in range(1000)]
+        encode_dict = {}
+        self._encode(self.root, encode_dict, '', path, 0)
+
+    def _encode(self, node, encode_dict, direction, path, pathlen):
         if node == None:
             return
+        path[pathlen] = direction
+
+        #print("Current stop: {} - {}".format(
+        #    node.word, ''.join(path)))
+        pathlen += 1
+
+        if (node.left == None and node.right == None):
+            print(node.word)
+            print(''.join(path))
+            print()
         else:
-            print(node.word, ' ', node.freq)
-            self._preorder_traverse(node.left)
-            self._preorder_traverse(node.right)
-
-
-
-class Node():
-    def __init__(self,  word, freq):
-        self.word = word
-        self.freq = freq
-        self.left = None
-        self.right = None
-        self.delete = False
+            self._encode(node.left, encode_dict, '0', path, pathlen)
+            self._encode(node.right, encode_dict, '1', path, pathlen)
 
 
 if __name__ == '__main__':
-    word_dict = {}
-    node_list = []
-    sentence = "this is a sentence, this is not a paragraph. this is a sentence! so don't get it twisted ya hear?"
+    #sentence = "this is a sentence, this is not a paragraph. this is a sentence! so don't get it twisted ya hear? because other was this sentence would not be a sentence but a sentence would become a paragrah, which is pretty weird if you ask me if if if if if if if if"
 
-    t = TreeBuilder(sentence, False)
-    print()
-    t._preorder_traverse(t.root)
+    #sentence = 'a a a a b b b c c d e'
+    #t = HuffmanTree(sentence, False)
+    #print()
+    #t._preorder_traverse(t.root)
+    #t._encode_tree()
+    t = HuffmanTree("od.txt", True)
     #print(t.word_dict)
-    #t = TreeBuilder("file.txt", True)
-    #print(t.word_dict)
-
-
+    t._encode_tree()

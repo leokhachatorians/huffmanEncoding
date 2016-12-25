@@ -18,6 +18,22 @@ class HuffmanTree():
         self.node_list = self._fill_node_list()
         self._create_tree()
         self.root = self.node_list[0]
+        self.encoding = {}
+        self._encode_tree()
+        self._write_to_disk()
+
+    def _write_to_disk(self):
+        buf = ""
+        with open(self._input, 'r') as f:
+            for line in f:
+                for word in line.split():
+                    word += ' '
+                    buf += str(self.encoding[word])
+
+        print(len(buf))
+
+        with open("output.txt", "w") as f:
+            f.write(buf)
 
     def _parse_input(self):
         if self.is_a_file:
@@ -34,15 +50,15 @@ class HuffmanTree():
         word_dict = {}
         if is_file:
             for line in contents:
-                #for word in line.split():
-                for word in re.split(r'(\s+)', line):
+                for word in line.split():
+                    word += ' '
                     if word not in word_dict:
                         word_dict[word] = 1
                     else:
                         word_dict[word] += 1
         else:
-            #for word in contents.split():
-            for word in re.split(r'(\s+)', contents):
+            for word in contents.split():
+                word += ' '
                 if word not in word_dict:
                     word_dict[word] = 1
                 else:
@@ -101,9 +117,7 @@ class HuffmanTree():
         pathlen += 1
 
         if (node.left == None and node.right == None):
-            print(node.word)
-            print(''.join(path))
-            print()
+            self.encoding[node.word] = int(''.join(path),2)
         else:
             self._encode(node.left, encode_dict, '0', path, pathlen)
             self._encode(node.right, encode_dict, '1', path, pathlen)

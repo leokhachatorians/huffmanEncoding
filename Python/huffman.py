@@ -3,6 +3,7 @@ import re
 import array
 import binascii
 import codecs
+import pickle
 
 class Node():
     def __init__(self,  word, freq):
@@ -26,8 +27,8 @@ class HuffmanTree():
         self._write_to_disk()
 
     def _write_to_disk(self):
-        for i in self.encoding:
-            print(i,self.encoding[i])
+        #for i in self.encoding:
+        #    print(i,self.encoding[i])
 
         buf = ""
         length = 0
@@ -35,7 +36,9 @@ class HuffmanTree():
         arr = array.array('B')
         with open(self._input, 'r') as f:
             for line in f:
-                for word in line.split():
+                #for word in line.split():
+                for word in line.splitlines(True):
+                #for word in re.split('(\W)', line):
                     word += ' '
                     buf += str(self.encoding[word])
 
@@ -57,8 +60,6 @@ class HuffmanTree():
             for byte in arr:
                 length = len(str(byte))
                 f.write(byte.to_bytes((length + 7) // 8, byteorder='big'))
-                #print(byte.to_bytes((length + 7) // 8, byteorder='big'))
-                #print("Here", binascii.hexlify(byte.to_bytes((length + 7) // 8, byteorder='big')))
 
     def _parse_input(self):
         if self.is_a_file:
@@ -75,7 +76,9 @@ class HuffmanTree():
         word_dict = {}
         if is_file:
             for line in contents:
-                for word in line.split():
+                for word in line.splitlines(True):
+                #for word in line.split():
+                #for word in re.split('(\W)', line):
                     word += ' '
                     if word not in word_dict:
                         word_dict[word] = 1
@@ -147,6 +150,8 @@ class HuffmanTree():
 class Decoder():
     def __init__(self, encoding):
         self.encoding = {v:k for k,v in encoding.items()}
+        #with open('tst.pickle', 'wb') as h:
+        #    pickle.dump(self.encoding, h, protocol=pickle.HIGHEST_PROTOCOL)
 
     def _read(self):
         with open('a.bin', 'rb') as f:
@@ -158,28 +163,21 @@ class Decoder():
             value = format(int(bit), '#010b')
             s += str(value).replace('0b','')
 
-        start, end = 0,0
+        start, end, stuck = 0, 0, 0
         output = ''
         while True:
-            if len(s) == 0:
+            if len(s) == 0 or stuck > 500:
+                print(s)
                 break
             try:
                 output += self.encoding[s[start:end]]
                 s = s[end:]
-                start, end = 0,0
+                start, end, stuck = 0,0,0
             except:
                 end += 1
-                print(s[end:])
+                stuck += 1
 
         print(output)
-
-
-
-            #print(bin(format(int(bit), '#08b')))
-
-            #rpint(' '.join(str(ord(c)) for c in str(byte)))
-            #p#rint(byte)
-            #print(codecs.decode(byte, "hex"))
 
     def _check_encoding(self):
         for i in self.encoding:
@@ -192,11 +190,11 @@ class Decoder():
 if __name__ == '__main__':
     #sentence = "this is a sentence, this is not a paragraph. this is a sentence! so don't get it twisted ya hear? because other was this sentence would not be a sentence but a sentence would become a paragrah, which is pretty weird if you ask me if if if if if if if if"
 
-    t = HuffmanTree("file2.txt", True)
+    #t = HuffmanTree("file2.txt", True)
     #print()
     #t._preorder_traverse(t.root)
     #t._encode_tree()
-    #t = HuffmanTree("od.txt", True)
+    t = HuffmanTree("book2", True)
     #print(t.word_dict)
     t._encode_tree()
 

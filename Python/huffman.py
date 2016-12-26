@@ -1,5 +1,7 @@
 import sys
 import re
+import array
+import binascii
 
 class Node():
     def __init__(self,  word, freq):
@@ -23,17 +25,73 @@ class HuffmanTree():
         self._write_to_disk()
 
     def _write_to_disk(self):
+        for i in self.encoding:
+            print(i,self.encoding[i])
+
         buf = ""
+        length = 0
+        chunk = 0
+        arr = array.array('B')
         with open(self._input, 'r') as f:
             for line in f:
                 for word in line.split():
                     word += ' '
                     buf += str(self.encoding[word])
 
-        print(len(buf))
+        for bit in buf:
+            if bit == '1':
+                chunk = (chunk << 1) | 0x01
+            else:
+                chunk = (chunk << 1)
+            length += 1
 
-        with open("output.txt", "w") as f:
-            f.write(buf)
+            if length == 8:
+                arr.extend([chunk])
+                chunk, length = 0, 0
+
+        if length != 0:
+            arr.extend([chunk << (8-length)])
+
+        print(len(arr))
+
+        print(type(arr[2]))
+
+        with open('a.bin', 'ab') as f:
+            for byte in arr:
+                length = len(str(byte))
+                f.write(byte.to_bytes((length + 7) // 8, byteorder='big'))
+                print(byte.to_bytes((length + 7) // 8, byteorder='big'))
+                print("Here", binascii.hexlify(byte.to_bytes((length + 7) // 8, byteorder='big')))
+
+
+
+
+                   # if len(buf) == 8:
+                   #     print('Equal: ',buf)
+                   #     n = int(buf,2).to_bytes((len(buf) + 7) // 8, byteorder='big')
+                   #     #data = bytearray([n])
+                   #     with open("output.bin", "ab") as f:
+                   #         f.write(n)
+                   #     buf = ""
+
+                   # elif len(buf) > 8:
+                   #     print('Greater: ',buf[0:8])
+                   #     hold = buf[8:len(buf)]
+                   #     n = int(buf[0:8],2).to_bytes((len(hold) + 7) // 8, byteorder='big')
+                   #     #data = bytearray([n])
+                   #     with open("output.bin", "ab") as f:
+                   #         f.write(n)
+                   #     buf = hold
+
+                   # n = int(buf,2).to_bytes((len(buf) + 7) // 8, byteorder='big')
+                   # #data = bytearray([n])
+                   # with open("output.bin", "ab") as f:
+                   #     f.write(n)
+                   #     print("Less than: ", buf)
+
+
+        #with open("output.txt", "ab") as f:
+        #    f.write(buf)
 
     def _parse_input(self):
         if self.is_a_file:
@@ -111,13 +169,10 @@ class HuffmanTree():
         if node == None:
             return
         path[pathlen] = direction
-
-        #print("Current stop: {} - {}".format(
-        #    node.word, ''.join(path)))
         pathlen += 1
 
         if (node.left == None and node.right == None):
-            self.encoding[node.word] = int(''.join(path),2)
+            self.encoding[node.word] = ''.join(path)
         else:
             self._encode(node.left, encode_dict, '0', path, pathlen)
             self._encode(node.right, encode_dict, '1', path, pathlen)
@@ -126,11 +181,10 @@ class HuffmanTree():
 if __name__ == '__main__':
     #sentence = "this is a sentence, this is not a paragraph. this is a sentence! so don't get it twisted ya hear? because other was this sentence would not be a sentence but a sentence would become a paragrah, which is pretty weird if you ask me if if if if if if if if"
 
-    #sentence = 'a a a a b b b c c d e'
-    #t = HuffmanTree(sentence, False)
+    t = HuffmanTree("file.txt", True)
     #print()
     #t._preorder_traverse(t.root)
     #t._encode_tree()
-    t = HuffmanTree("od.txt", True)
+    #t = HuffmanTree("od.txt", True)
     #print(t.word_dict)
     t._encode_tree()

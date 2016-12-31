@@ -41,16 +41,21 @@ class Node():
             self.print_level(root.right, level - 1)
 
 class HuffmanTree():
-    def __init__(self, _input):
-        self._input = _input
+    def __init__(self, _input, is_a_file=False):
+        self.encoding = {}
         self.letter_dict = {}
+
+        self._input = _input
+        self.is_a_file = is_a_file
         self._parse_input()
         self.node_list = self._fill_node_list()
         self._create_tree()
-        self.root = self.node_list[0]
-        self.encoding = {}
         self._encode_tree()
-        self._write_to_disk()
+
+        if self.is_a_file:
+            self._write_to_disk()
+        else:
+            self._display_encoding()
 
     def _write_to_disk(self):
         buf = ""
@@ -59,8 +64,7 @@ class HuffmanTree():
         arr = array.array('B')
         with open(self._input, 'r') as f:
             for line in f:
-                for word in re.split('(\W)',line):
-                #for word in re.findall(r'\S+|\n',line):
+                for word in re.split('(\W)', line):
                     for letter in word:
                         buf += str(self.encoding[letter])
 
@@ -84,18 +88,20 @@ class HuffmanTree():
                 f.write(byte.to_bytes((length + 7) // 8, byteorder='big'))
 
     def _parse_input(self):
-        try:
-            with open(self._input, 'r') as f:
-                self.letter_dict = self._create_letter_dict(f)
-        except IOError:
-            print("Unable to read file!")
-            exit(1)
+        if self.is_a_file:
+            try:
+                with open(self._input, 'r') as f:
+                    self.letter_dict = self._create_letter_dict(f, is_file=True)
+            except IOError:
+                print("Unable to read file!")
+                exit(1)
+        else:
+            self.letter_dict = self._create_letter_dict(self._input)
 
-    def _create_letter_dict(self, contents):
+    def _create_letter_dict(self, contents, is_file=False):
         letter_dict = {}
         for line in contents:
-            for word in re.split('(\W)',line):
-            #for word in re.findall(r'\S+|\n',line):
+            for word in re.split('(\W)', line):
                 for letter in word:
                     if letter not in letter_dict:
                         letter_dict[letter] = 1
@@ -139,6 +145,7 @@ class HuffmanTree():
                     self.node_list.remove(i)
 
             num_entries -= 1
+        self.root = self.node_list[0]
 
     def _encode_tree(self):
         path = ['' for i in range(100)]
@@ -157,18 +164,25 @@ class HuffmanTree():
             self._encode(node.left, encode_dict, '0', path, pathlen)
             self._encode(node.right, encode_dict, '1', path, pathlen)
 
+    def _display_encoding(self):
+        for letter in self.encoding:
+            print("Letter: {}- <{}>".format(letter, self.encoding[letter]))
+        buf = ""
+        for letter in self._input:
+            buf += self.encoding[letter]
+        print(buf)
+
+
 class Decoder():
     def __init__(self, encoding):
         self.encoding = {v:k for k,v in encoding.items()}
-        with open('tst3.pickle', 'wb') as h:
-            pickle.dump(self.encoding, h, protocol=pickle.HIGHEST_PROTOCOL)
+        #with open('tst3.pickle', 'wb') as h:
+        #    pickle.dump(self.encoding, h, protocol=pickle.HIGHEST_PROTOCOL)
 
     def _read(self):
         with open('a.bin', 'rb') as f:
             byte = f.read()
-
         s = ""
-
         for bit in byte:
             value = format(int(bit), '#010b')
             s += str(value).replace('0b','')
@@ -186,24 +200,20 @@ class Decoder():
             except:
                 end += 1
                 stuck += 1
-
         print(output)
-
-    def _check_encoding(self):
-        for i in self.encoding:
-            print(i, ' ', self.encoding[i])
 
 
 if __name__ == '__main__':
     #sentence = "this is a sentence, this is not a paragraph. this is a sentence! so don't get it twisted ya hear? because other was this sentence would not be a sentence but a sentence would become a paragrah, which is pretty weird if you ask me if if if if if if if if"
+    sentence = "The quick brown fox jumps over the lazy dog"
+    #t = HuffmanTree(sentence)
 
-    #t = HuffmanTree("file2.txt", True)
+    t = HuffmanTree("od.txt", True)
     #print()
     #t._preorder_traverse(t.root)
     #t._encode_tree()
-    t = HuffmanTree("od.txt")
+    #t = HuffmanTree("od.txt", True)
     #t._encode_tree()
 
     e = Decoder(t.encoding)
-    e._check_encoding()
     e._read()

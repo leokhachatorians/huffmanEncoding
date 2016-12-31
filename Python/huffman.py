@@ -59,7 +59,8 @@ class HuffmanTree():
         arr = array.array('B')
         with open(self._input, 'r') as f:
             for line in f:
-                for word in re.findall(r'\S+|\n',line):
+                for word in re.split('(\W)',line):
+                #for word in re.findall(r'\S+|\n',line):
                     for letter in word:
                         buf += str(self.encoding[letter])
 
@@ -93,7 +94,8 @@ class HuffmanTree():
     def _create_letter_dict(self, contents):
         letter_dict = {}
         for line in contents:
-            for word in re.findall(r'\S+|\n',line):
+            for word in re.split('(\W)',line):
+            #for word in re.findall(r'\S+|\n',line):
                 for letter in word:
                     if letter not in letter_dict:
                         letter_dict[letter] = 1
